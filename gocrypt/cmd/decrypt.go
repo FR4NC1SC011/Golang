@@ -17,6 +17,8 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
 
 	"github.com/spf13/cobra"
 )
@@ -26,7 +28,22 @@ var decryptCmd = &cobra.Command{
 	Use:   "decrypt",
 	Short: "Read encrypted file",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("decrypt called")
+		file := args[0]                 // File to encrypt is the first arg.
+		message, err := Read_file(file) // Read File Function on data_encryption.go
+		Check(err)                      // Function on data_encryption.go
+
+		secret, err := ioutil.ReadFile(args[1]) // Read second argument as a string (Secret)
+		if err != nil {
+			fmt.Println("key.key not specified")
+			log.Fatal(err)
+		}
+
+		decrypted, err := Decrypt(message, secret)
+		Check(err)
+
+		fmt.Println("Decrypted:")
+		fmt.Println(decrypted)
+
 	},
 }
 

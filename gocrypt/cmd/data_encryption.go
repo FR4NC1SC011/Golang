@@ -82,10 +82,16 @@ func Read_file(key_file string) (string, error) {
 
 	key := string(content)
 	fmt.Println("Key:")
-	fmt.Println("\n")
+	fmt.Println()
 	fmt.Println(key)
 	fmt.Println()
 
 	return key, nil
 
+}
+
+func Check(e error) {
+	if e != nil {
+		log.Println(e)
+	}
 }

@@ -17,6 +17,7 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 
 	"github.com/spf13/cobra"
@@ -27,21 +28,24 @@ var encryptCmd = &cobra.Command{
 	Use:   "encrypt",
 	Short: "Encrypt a file",
 	Run: func(cmd *cobra.Command, args []string) {
-		secret, err := Secret()
-		if err != nil {
-			log.Fatal(err)
-		}
-		file := args[0]
-		message, err := Read_file(file)
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Println("Message:", message)
 
-		encrypted, err := Encrypt(message, secret)
+		file := args[0]                 // File to encrypt is the first arg.
+		message, err := Read_file(file) // Read File Function on data_encryption.go
+		Check(err)                      // Function on data_encryption.go
+
+		secret, err := ioutil.ReadFile(args[1]) // Read second argument as a string (Secret)
 		if err != nil {
+			fmt.Println("key.key not specified")
 			log.Fatal(err)
 		}
+
+		encrypted, err := Encrypt(message, secret) // Encrypt File Using the secret (2 arg)
+		Check(err)
+
+		enc_msg := []byte(encrypted)
+		err = ioutil.WriteFile("file_encrypted.txt", enc_msg, 0644)
+		Check(err)
+
 		fmt.Println("Encrypted:", encrypted)
 
 	},
